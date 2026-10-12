@@ -1,0 +1,76 @@
+:root {
+	color-scheme: dark;
+	--app-bg: #0d1413;
+	--app-surface: #101a19;
+	--app-surface-2: #14231f;
+	--app-text: #f3efe8;
+	--app-text-soft: #c7d1cc;
+	--app-muted: #8e9993;
+	--app-border: rgba(217, 192, 142, 0.18);
+	--app-accent: #d9c08e;
+	--app-accent-2: #f16b4e;
+	--app-forest: #123d32;
+	--app-forest-deep: #0c2c24;
+}
+
+html,
+body,
+#root,
+.main-container {
+	min-height: 100%;
+	height: 100%;
+	margin: 0;
+	background: var(--app-bg);
+	color: var(--app-text);
+	font-family: 'Plus Jakarta Sans', 'Segoe UI', sans-serif;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+body {
+	background:
+		radial-gradient(circle at top, rgba(18, 61, 50, 0.38), transparent 35%),
+		var(--app-bg);
+}
+
+button,
+input,
+textarea,
+select {
+	font: inherit;
+	color: inherit;
+}
+
+img {
+	display: block;
+	max-width: 100%;
+}
+
+* {
+	box-sizing: border-box;
+}
+
+::selection {
+	background: rgba(217, 192, 142, 0.3);
+	color: #fff;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	font-family: 'DM Serif Display', Georgia, serif;
+	letter-spacing: -0.02em;
+}
+
+p,
+span,
+small,
+label,
+button,
+input,
+textarea {
+	font-family: 'Plus Jakarta Sans', 'Segoe UI', sans-serif;
+}
