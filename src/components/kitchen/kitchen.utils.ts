@@ -39,7 +39,7 @@ export function getOrderLabel(order: KitchenOrder): string {
     return order.trackingNumber || order.posReference || String(order.orderId)
 }
 
-export function getTableLabel(order: KitchenOrder): string {
+export function getTableLabel(order: Pick<KitchenOrder, 'tableId' | 'tableName'>): string {
     return order.tableName ?? (order.tableId != null ? String(order.tableId) : '-')
 }
 

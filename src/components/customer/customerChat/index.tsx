@@ -3,6 +3,7 @@ import type { MenuItem } from '../../../api/api'
 import { useMenu } from '../../../hooks/useMenu'
 import { useCartStore } from '../../../store/cart.store'
 import ChatBubble from '../../chat/chatBubble/ChatBubble'
+import TypingIndicator from '../../chat/TypingIndicator'
 import Pill from '../../ui/button/Pill'
 import TextArea from '../../ui/TextArea'
 import DishSelectionCard from './dishSelection/DishSelectionCard'
@@ -23,6 +24,7 @@ const CATEGORY_MESSAGES = {
 
 const MENU_INTRO = "Here's our menu. Swipe through and tap Add or Choose to start your order."
 const HIGHLIGHT_DURATION_MS = 1200
+const REPLY_DELAY_MS = 800
 
 // A plain "show me the menu" request. Category requests (drinks, vegetarian) are not handled yet.
 const isMenuRequest = (text: string) => /\bmenu\b/i.test(text) && !/\b(drinks?|vegetarian)\b/i.test(text)
@@ -32,6 +34,7 @@ export default function CustomerChat() {
     const { drafts, openDraft, setQuantity, toggleOption, setNote, removeDraft } = useDishDrafts()
     const addLine = useCartStore((state) => state.addLine)
     const [messages, setMessages] = useState<ChatMessage[]>([])
+    const [isReplying, setIsReplying] = useState(false)
     const [highlightedDraftId, setHighlightedDraftId] = useState<string | null>(null)
     const nextId = useRef(0)
     const bottomRef = useRef<HTMLDivElement>(null)
@@ -39,10 +42,16 @@ export default function CustomerChat() {
     const newId = () => nextId.current++
     const appendMessages = (...added: ChatMessage[]) => setMessages((prev) => [...prev, ...added])
 
-    // TODO: call the customer chat API here and append the assistant's reply.
+    // TODO: replace the timer with the customer chat API call; the typing indicator shows while awaiting it.
     const handleSend = (text: string) => {
-        const replies: ChatMessage[] = isMenuRequest(text) ? [{ id: newId(), role: 'assistant', type: 'menu' }] : []
-        appendMessages({ id: newId(), role: 'user', type: 'text', text }, ...replies)
+        appendMessages({ id: newId(), role: 'user', type: 'text', text })
+        if (!isMenuRequest(text)) return
+
+        setIsReplying(true)
+        setTimeout(() => {
+            appendMessages({ id: newId(), role: 'assistant', type: 'menu' })
+            setIsReplying(false)
+        }, REPLY_DELAY_MS)
     }
 
     // Add and Choose both open one card per dish; picking a dish that is already open just points to its card.
@@ -93,7 +102,7 @@ export default function CustomerChat() {
     useEffect(() => {
         if (messages.length === 0) return
         bottomRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' })
-    }, [messages])
+    }, [messages, isReplying])
 
     const renderMessage = (message: ChatMessage) => {
         if (message.type === 'menu') {
@@ -136,6 +145,7 @@ export default function CustomerChat() {
             />
             <ChatBubble />
             {messages.map(renderMessage)}
+            {isReplying && <TypingIndicator />}
             <div ref={bottomRef} className="scroll-mb-40" />
             <div className="sticky bottom-0 mt-auto flex flex-col gap-3 bg-linear-to-t from-[#0d1413] from-70% to-transparent pt-4 pb-1">
                 {drafts.length > 0 && (
