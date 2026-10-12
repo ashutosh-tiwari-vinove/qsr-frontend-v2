@@ -1,12 +1,12 @@
 import type { ButtonHTMLAttributes } from 'react'
 
-export type PillVariant = 'suggestions' | 'showMenu'
+export type PillVariant = 'suggestions' | 'showMenu' | 'status'
 
 type PillProps = Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'children' | 'onClick'> & {
     variant?: PillVariant
     label: string
     onClick?: () => void
-    /** Marks the pill as the active choice (suggestions only). Omit for plain, non-toggle pills. */
+    /** Marks the pill as the active choice (suggestions and status). Omit for plain, non-toggle pills. */
     selected?: boolean
 }
 
@@ -17,6 +17,9 @@ const VARIANTS: Record<PillVariant, string> = {
     // Quick-reply chips shown above the chat input.
     suggestions:
         'min-h-[36px] border border-[#2a3a34] bg-[#161f1c] px-4 text-[13px] text-[#f3efe8] hover:-translate-y-0.5 hover:border-[#d9c08e]/50 hover:bg-[#1d2a25] focus-visible:outline-[#d9c08e] lg:min-h-[40px] lg:px-5 lg:text-[14px]',
+    // Compact toggle used for picking one of several statuses (kitchen order cards).
+    status:
+        'min-h-[32px] border border-[#2a3a34] bg-[#161f1c] px-3 text-[12px] text-[#c7d1cc] hover:border-[#d9c08e]/50 hover:bg-[#1d2a25] focus-visible:outline-[#d9c08e] lg:min-h-[36px] lg:text-[13px]',
     // Primary call-to-action that opens the menu.
     showMenu:
         'min-h-[37px] bg-[#f16b4e] px-4 text-[12px] text-[#1b211e] shadow-[0_4px_14px_rgba(241,107,78,0.3)] hover:bg-[#ff8062] focus-visible:outline-[#f3dfb5] lg:min-h-[46px] lg:px-6 lg:text-[14px]',
@@ -33,15 +36,15 @@ export default function Pill({
     className = '',
     ...rest
 }: PillProps) {
-    const isSuggestion = variant === 'suggestions'
+    const isToggle = variant === 'suggestions' || variant === 'status'
 
     return (
         <button
             {...rest}
             type={type}
             onClick={onClick}
-            aria-pressed={isSuggestion ? selected : undefined}
-            className={`${BASE} ${VARIANTS[variant]} ${isSuggestion && selected ? SELECTED : ''} ${className} cursor-pointer`}
+            aria-pressed={isToggle ? selected : undefined}
+            className={`${BASE} ${VARIANTS[variant]} ${isToggle && selected ? SELECTED : ''} ${className} cursor-pointer`}
         >
             {label}
             {variant === 'showMenu' && (

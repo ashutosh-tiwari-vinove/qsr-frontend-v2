@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import CustomerPage from "./pages/customerPage";
+import KitchenPage from "./pages/kitchenPage";
 import { useCurrency } from "./hooks/useCurrency";
 import "./App.css";
 
@@ -15,6 +16,7 @@ export default function App() {
         <CurrencyInitializer />
         <Routes>
           <Route path="/customer" element={<CustomerPage />} />
+          <Route path="/kitchen" element={<KitchenPage />} />
         </Routes>
       </BrowserRouter>
     </div>
